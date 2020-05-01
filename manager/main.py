@@ -13,5 +13,5 @@ from app import app
 
 if __name__ == "__main__":
     manager.client.loop_start()
-    app.run(debug=True)
+    app.run(debug=False)
 

@@ -45,6 +45,7 @@ class DeviceManager():
         message['Command'] = 'Add Device'
 
         message = json.dumps(message)
+        self.client.subscribe(f'Devices/{uuid}')
         self.client.publish('Devices', message)
 
     def remove_device(self, device_id):
