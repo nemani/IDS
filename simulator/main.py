@@ -8,6 +8,9 @@ from devices.TemperatureDevice import TemperatureDevice
 from devices.AlarmDevice import AlarmDevice
 from devices.DoorstepDevice import DoorstepDevice
 from devices.AttendanceDevice import AttendanceDevice
+from devices.TrafficDevice import TrafficDevice
+from devices.StreetlightDevice import StreetlightDevice
+from devices.ParkingDevice import ParkingDevice
 
 parser = argparse.ArgumentParser(description='Start a new Device Simulator')
 parser.add_argument('--broker', type=str, help='Broker Host to connect to', required=True)
@@ -18,7 +21,10 @@ DEVICE_TYPES = {
     'Temperature': TemperatureDevice,
     'Doorstep': DoorstepDevice,
     'Attendance': AttendanceDevice,
-    'Alarm': AlarmDevice
+    'Alarm': AlarmDevice,
+    'Traffic': TrafficDevice,
+    'Streetlight': StreetlightDevice,
+    'Parking': ParkingDevice
 }
 
 def boot(uuid, dtype):
