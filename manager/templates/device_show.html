@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block body %}
+
+<span> Device ID : {{ device["uuid"] }} </span> </br>
+<span> Device Type : {{ device["dtype"] }} </span> </br>
+<span> Device Group : {{ device["group"] }} </span> </br>
+<span> Created At : {{ device["created_at"] }} </span> </br>
+
+<a href="{{request.path}}/edit">Edit</a>
+<a href="/devices" style="padding: 3px;">Back to all devices</a>
+{% endblock %}

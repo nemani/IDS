@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block body %}
+<h2>Add New Device :</h2>
+<form action='/devices/add' method="POST">
+    <label for="uuid">Device ID:</label> 
+    <input type='text' name='uuid' id='uuid' value='{{uuid | default("")}}'>
+    <br>
+    <label for="dtype">Device Type: </label> 
+    <select name='dtype' id='dtype'>
+        <option value="Temperature">Temperature Sensor</option>
+        <option value="Doorstep">Doorstep Sensor</option>
+        <option value="Attendance">Attendance Sensor</option>
+        <option value="Alarm">Fire Alarm</option>
+    </select>
+    <br>
+    <label for="group">Group ID:</label> 
+    <input type='text' name='group' id='group'>
+    <br>
+    <input type='submit'>
+</form>
+{% endblock %}

@@ -1,0 +1,5 @@
+flask
+python-kafka
+dataset
+paho-mqtt
+psycopg2
