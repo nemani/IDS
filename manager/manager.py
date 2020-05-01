@@ -42,7 +42,7 @@ class DeviceManager():
         message['dtype'] = dtype
 
         message['type'] = 'Command'
-        message['Command'] = 'Add Device'
+        message['command'] = 'Add Device'
 
         message = json.dumps(message)
         self.client.subscribe(f'Devices/{uuid}')

@@ -21,7 +21,6 @@ DEVICE_TYPES = {
     'Alarm': AlarmDevice
 }
 
-
 def boot(uuid, dtype):
     device = DEVICE_TYPES[dtype](uuid, broker)
     device.on_stimulus()
@@ -31,11 +30,10 @@ def setup_device(uuid, dtype):
     thread.start()
     
 def main_on_message_recieve(client, userdata, message):
-    print(message)
     data = json.loads(message.payload)
     print(data)
-    if data['Type'] == 'Command':
-        if data['Command'] == 'Add Device':
+    if data['type'] == 'Command':
+        if data['command'] == 'Add Device':
             setup_device(data['uuid'], data['dtype'])
 
 

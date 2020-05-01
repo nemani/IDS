@@ -19,7 +19,7 @@ class BaseDevice:
         self.send_init_message()
         
     def send_init_message(self):
-        message = self.create_message({'type': "New Device", 'content': f"New {self.dtype} device created!", 'dtype': self.dtype, 'group': self.group })
+        message = self.create_message({'type': "New Device", 'content': f"New {self.dtype} device created!", 'dtype': self.dtype})
         self.client.publish("Devices", message)
 
     def create_message(self, message_opts):
