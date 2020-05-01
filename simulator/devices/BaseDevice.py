@@ -35,6 +35,11 @@ class BaseDevice:
 
         if data.type == "Command":
             self.process_command(data)
+        if data.type == "Control":
+            if data.control == "Start Device":
+                self.start()
+            elif data.control == "Stop Device":
+                self.stop()
         print("message received ", str(message.payload.decode("utf-8")))
         print("message topic=", message.topic)
 

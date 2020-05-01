@@ -28,7 +28,7 @@ class DeviceManager():
             return False
 
         device = {}
-        device['uuid'] = data['uuid']
+        device['uuid'] = int(data['uuid'])
         device['dtype'] = data['dtype']
         device['group'] = data['group']
         device['created_at'] = datetime.now()
@@ -47,6 +47,26 @@ class DeviceManager():
         message = json.dumps(message)
         self.client.subscribe(f'Devices/{uuid}')
         self.client.publish('Devices', message)
+
+    def stop_device(self, uuid, dtype):
+        message = {}
+        message['uuid'] = uuid
+        message['dtype'] = dtype
+
+        message['type'] = 'Control'
+        message['control'] = 'Stop Device'
+        message = json.dumps(message)
+        self.client.publish(f'Devices/{uuid}', message)
+
+    def start_device(self, uuid, dtype):
+        message = {}
+        message['uuid'] = uuid
+        message['dtype'] = dtype
+
+        message['type'] = 'Control'
+        message['control'] = 'Start Device'
+        message = json.dumps(message)
+        self.client.publish(f'Devices/{uuid}', message)
 
     def remove_device(self, device_id):
         db['device'].delete(uuid=device_id)

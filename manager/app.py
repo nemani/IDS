@@ -16,13 +16,13 @@ def landing_page():
 @app.route('/devices')
 def devices():
     response = manager.list_devices()
-    return render_template('devices.html', devices=response )
+    return render_template('devices.html', devices=response)
 
 # Return the Groups in HTML Format
 @app.route('/groups')
 def groups():
     response = manager.list_groups()
-    return render_template('groups.html', groups=response )
+    return render_template('groups.html', groups=response)
 
 # Return the Devices in JSON Format
 @app.route('/devices.json')
@@ -75,6 +75,18 @@ def device_show(device_uuid):
     if not device:
         abort(404)
     return render_template('device_show.html', device=device)
+
+@app.route('/devices/start/<int:device_uuid>/<string:device_dtype>')
+def device_start(device_uuid, device_dtype):
+    manager.start_device(device_uuid, device_dtype)
+    
+    return redirect('/devices')
+
+@app.route('/devices/stop/<int:device_uuid>/<string:device_dtype>')
+def device_stop(device_uuid, device_dtype):
+    manager.stop_device(device_uuid, device_dtype)
+    
+    return redirect('/devices')
 
 @app.route('/devices/<int:device_uuid>/edit', methods=['GET', 'POST'])
 def device_edit(device_uuid):
