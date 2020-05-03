@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% block body %}
-    <h1>Welcome to the Device Manager</h1> 
-    <a href="/devices"> List Devices </a> 
-    <a href="/groups"> List Groups </a> 
+<div class="container-fluid">
+    <br><br>
+    <h1 text-center font-weight-bold>IoT Device Manager</h1>
+    <br>
+    <hr>
+    <a href="/devices" class="btn btn-success" role="button">List Active Devices</a>
+    <a href="/groups" class="btn btn-success" role="button">List Groups</a>
+</div>
 {% endblock %}

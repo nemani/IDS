@@ -28,13 +28,21 @@ def groups():
 @app.route('/devices.json')
 def devices_json():
     response = manager.list_devices()
-    return jsonify(response)
+    response = json.dumps(response)
+    
+    return Response(response, 
+        mimetype='application/json',
+        headers={'Content-Disposition':'attachment;filename=devices.json'})
 
 # Return the Groups in JSON Format
 @app.route('/groups.json')
 def groups_json():
     response = manager.list_groups()
-    return jsonify(response)
+    response = json.dumps(response)
+    
+    return Response(response, 
+        mimetype='application/json',
+        headers={'Content-Disposition':'attachment;filename=groups.json'})
 
 @app.route('/devices/add', methods=['GET', 'POST'])
 def device_add():
@@ -58,7 +66,6 @@ def device_add():
         next_uuid = len(manager.list_devices())
         return render_template('device_add.html', title='Add New Device', uuid=next_uuid)
 
-
 @app.route('/devices/<int:device_uuid>/delete')
 def device_delete(device_uuid):
     device = manager.get_device(device_uuid)
@@ -67,7 +74,6 @@ def device_delete(device_uuid):
     manager.remove_device(device_uuid)
     
     return redirect('/devices')
-
 
 @app.route('/devices/<int:device_uuid>')
 def device_show(device_uuid):
@@ -111,7 +117,6 @@ def device_edit(device_uuid):
         return redirect(f'/devices/{device_uuid}')
     else:
         return render_template('device_edit.html', title='Edit Device', device=device)
-
 
 @app.errorhandler(404)
 def page_not_found(error):

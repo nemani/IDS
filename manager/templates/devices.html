@@ -1,24 +1,27 @@
 {% extends "base.html" %}
 {% block body %}
-<a href="/devices/add"> Add New Device </a>
-<table>
-    <thead>
-        <th>Device ID</th>
-        <th>Device Type</th>
-        <th>Device Group</th>
-        <th>Created At</th>
-        <th>Show Details</th>
-    </thead>
-    <tbody>
+<div class="container-fluid">
+    <br><br>
+    <a href="/" class="btn btn-success" role="button">Home</a>
+    <a href="/devices/add" class="btn btn-success" role="button" style="float: right">Add Device</a>
+    <br><br>
+    <hr>
+    <div class="card-columns">
         {% for key, value in devices.items() %}
-        <tr>
-            <td>{{ value["uuid"] }}</td>
-            <td>{{ value["dtype"] }}</td>
-            <td>{{ value["group"] }}</td>
-            <td>{{ value["created_at"] }}</td>
-            <td><a href='/devices/{{ value["uuid"] }}'>Show</a></td>
-        </tr>
+        <div class="card bg-info text-center text-white">
+            <div class="card-header">
+                {{ value["created_at"] }}
+            </div>
+            <div class="card-body">
+                {{ value["group"] }} {{ value["dtype"] }}
+            </div>
+            <div class="card-footer">
+                <a href='/devices/{{ value["uuid"] }}' class="btn btn-warning" role="button">{{ value["uuid"] }}</a>
+            </div>
+        </div>
         {% endfor %}
-    </tbody>
-</table>
+    </div>
+    <hr>
+    <a href="/devices.json" class="btn btn-success" role="button" style="float: right">Download Device List (json)</a>
+</div>
 {% endblock %}

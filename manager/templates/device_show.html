@@ -1,11 +1,22 @@
 {% extends "base.html" %}
 {% block body %}
-
-<span> Device ID : {{ device["uuid"] }} </span> </br>
-<span> Device Type : {{ device["dtype"] }} </span> </br>
-<span> Device Group : {{ device["group"] }} </span> </br>
-<span> Created At : {{ device["created_at"] }} </span> </br>
-
-<a href="{{request.path}}/edit">Edit</a>
-<a href="/devices" style="padding: 3px;">Back to all devices</a>
+<div class="container-fluid">
+    <br><br>
+    <a href="/" class="btn btn-success" role="button">Home</a>
+    <a href="/devices" class="btn btn-success" role="button">List Devices</a>
+    <a href="{{request.path}}/edit" class="btn btn-success" role="button" style="float: right">Edit Device</a>
+    <br><br>
+    <hr>
+    <div class="card-columns">
+        <div class="card bg-info text-center text-white" style="width:400px;">
+            <div class="card-header">
+                {{ device["created_at"] }}
+            </div>
+            <div class="card-body">
+                {{ device["group"] }} {{ device["dtype"] }}
+            </div>
+        </div>
+    </div>
+    <hr>
+</div>
 {% endblock %}

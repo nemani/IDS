@@ -1,17 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title> {{ title }} | IOT Device Manager </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     <ul class=flashes>
         {% for category, message in messages %}
-            <li class="{{ category }}">{{ category }}: {{ message }}</li>
+        <li class="{{ category }}">{{ category }}: {{ message }}</li>
         {% endfor %}
     </ul>
     {% endif %}
     {% endwith %}
 </head>
+
 <body>
     <div class="wrapper">
         {% block body %}
@@ -19,4 +25,5 @@
         <div class="push"></div>
     </div>
 </body>
+
 </html>
