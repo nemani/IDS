@@ -24,6 +24,12 @@ def groups():
     response = manager.list_groups()
     return render_template('groups.html', groups=response)
 
+# Return the dtypes in HTML Format
+@app.route('/dtypes')
+def dtypes():
+    response = manager.list_dtypes()
+    return render_template('groups.html', groups=response)
+
 # Return the Devices in JSON Format
 @app.route('/devices.json')
 def devices_json():
@@ -44,6 +50,13 @@ def groups_json():
         mimetype='application/json',
         headers={'Content-Disposition':'attachment;filename=groups.json'})
 
+# Return the dTypes in JSON Format
+@app.route('/dtypes.json')
+def dtypes_json():
+    response = manager.list_dtypes()
+    return jsonify(response)
+
+
 @app.route('/devices/add', methods=['GET', 'POST'])
 def device_add():
     if request.method == 'POST':
@@ -56,7 +69,8 @@ def device_add():
             'dtype': dtype,
             'group': group
         }
-        if manager.add_device(new_device):
+        if manager.add_device_to_db(data):
+            manager.send_add_message(uuid, dtype)
             flash(u'Device added', 'success')
         else:
             flash(u'Invalid uuid', 'error')
@@ -80,19 +94,32 @@ def device_show(device_uuid):
     device = manager.get_device(device_uuid)
     if not device:
         abort(404)
-    return render_template('device_show.html', device=device)
 
-@app.route('/devices/start/<int:device_uuid>/<string:device_dtype>')
-def device_start(device_uuid, device_dtype):
-    manager.start_device(device_uuid, device_dtype)
-    
+    manager.process_device_command(device, command)
     return redirect('/devices')
 
-@app.route('/devices/stop/<int:device_uuid>/<string:device_dtype>')
-def device_stop(device_uuid, device_dtype):
-    manager.stop_device(device_uuid, device_dtype)
-    
-    return redirect('/devices')
+@app.route('/groups/<int:group_id>/<string:command>')
+def group_command(group_id, command):
+    if not command in ["start", "stop", "delete"]:
+        abort(404)
+    groups = manager.list_groups()
+    group = groups[group_id]
+    for device in group:
+        manager.process_device_command(device, command)
+
+    return redirect('/groups')
+
+@app.route('/dtypes/<string:dtype>/<string:command>')
+def type_command(dtype, command):
+    if not command in ["start", "stop", "delete"]:
+        abort(404)
+    dtypes = manager.list_dtypes()
+    dtype = dtypes[dtype]
+    for device in dtype:
+        manager.process_device_command(device, command)
+
+    return redirect('/dtypes')
+
 
 @app.route('/devices/<int:device_uuid>/edit', methods=['GET', 'POST'])
 def device_edit(device_uuid):

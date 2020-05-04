@@ -23,7 +23,7 @@ class DeviceManager():
         data = json.loads(message.payload)
         print(data)
 
-    def add_device(self, data):
+    def add_device_to_db(self, data):
         if db['device'].find_one(uuid=data['uuid']):
             return False
 
@@ -32,11 +32,17 @@ class DeviceManager():
         device['dtype'] = data['dtype']
         device['group'] = data['group']
         device['created_at'] = datetime.now()
+        device['status'] = 1
         db['device'].insert(device)
-        self.init_new_device(data['uuid'], data['dtype'])
         return True
     
-    def init_new_device(self, uuid, dtype):
+    def remove_device_from_db(self, data):
+        if db['device'].find_one(uuid=data['uuid']):
+            return False
+
+        db['device'].delete(uuid=uuid)
+
+    def send_add_message(self, uuid, dtype):
         message = {}
         message['uuid'] = uuid
         message['dtype'] = dtype
@@ -48,37 +54,32 @@ class DeviceManager():
         self.client.subscribe(f'Devices/{uuid}')
         self.client.publish('Devices', message)
 
-    def stop_device(self, uuid, dtype):
+    def send_stop_message(self, uuid):
         message = {}
         message['uuid'] = uuid
-        message['dtype'] = dtype
-
         message['type'] = 'Control'
         message['control'] = 'Stop Device'
         message = json.dumps(message)
         self.client.publish(f'Devices/{uuid}', message)
 
-    def start_device(self, uuid, dtype):
-        message = {}
-        message['uuid'] = uuid
-        message['dtype'] = dtype
+    def update_status_off(self, uuid):
+        device = self.get_device(uuid)
+        data = dict(uuid=uuid, status=0)
+        db['device'].update(data, ['uuid'])
 
-        message['type'] = 'Control'
-        message['control'] = 'Start Device'
-        message = json.dumps(message)
-        self.client.publish(f'Devices/{uuid}', message)
-
-    def remove_device(self, device_id):
-        db['device'].delete(uuid=device_id)
+    def update_status_on(self, uuid):
+        device = self.get_device(uuid)
+        data = dict(uuid=uuid, status=1)
+        db['device'].update(data, ['uuid'])
 
     def list_devices(self):
         devices = {}
         for device in db['device'].find():
             device["created_at"] = device["created_at"].strftime("%d/%m/%y %H:%M:%S")
-            devices[device['id']] = device
+            devices[device['uuid']] = device
 
         return devices
-    
+
     def get_device(self, device_id):
         device = db['device'].find_one(uuid=device_id)
         
@@ -101,4 +102,29 @@ class DeviceManager():
                 groups[group] = [device]
 
         return groups
-    
+
+
+    def list_dtypes(self):
+        dtypes = {}
+
+        for device in db['device'].find():
+            device["created_at"] = device["created_at"].strftime("%d/%m/%y %H:%M:%S")
+            dtype = device['dtype']
+
+            if dtype in dtypes:
+                dtypes[dtype].append(device)
+            else:
+                dtypes[dtype] = [device]
+
+        return dtypes
+
+    def process_device_command(self, device, command):
+        if command == "start":
+            manager.send_add_message(device['uuid'], device['dtype'])
+            manager.update_status_on(device['uuid'])
+        if command == "stop":
+            manager.send_stop_message(device['uuid'])
+            manager.update_status_off(device['uuid'])
+        if command == "delete":
+            manager.send_stop_message(device['uuid'])
+            manager.remove_device_from_db(device['uuid'])
