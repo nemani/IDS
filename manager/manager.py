@@ -18,10 +18,23 @@ class DeviceManager():
         self.client.connect(broker)
         self.client.subscribe(self.topic)
         self.client.subscribe("Devices")
+        self.init_db_devices()
+
+    def init_db_devices():
+        devices = self.list_devices()
+        for device in devices:
+            if device['status'] == 1:
+                send_add_message(device['uuid'], device['dtype'])
+
     
     def on_mqtt_message_recieve(self, client, userdata, message):
         data = json.loads(message.payload)
-        print(data)
+        if data['Type'] == "Heartbeat":
+            device = self.get_device(data['uuid'])
+            device['hearbeat'] = datetime.now()
+        if data['Type'] == "Tick":
+            db['data'].insert(data)
+            self.kafka_producer.send('DeviceManager', json.dumps(data))
 
     def add_device_to_db(self, data):
         if db['device'].find_one(uuid=data['uuid']):
@@ -32,6 +45,7 @@ class DeviceManager():
         device['dtype'] = data['dtype']
         device['group'] = data['group']
         device['created_at'] = datetime.now()
+        device['heartbeat'] = datetime.now()
         device['status'] = 1
         db['device'].insert(device)
         return True
