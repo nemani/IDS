@@ -54,7 +54,11 @@ def groups_json():
 @app.route('/dtypes.json')
 def dtypes_json():
     response = manager.list_dtypes()
-    return jsonify(response)
+    response = json.dumps(response)
+    
+    return Response(response, 
+        mimetype='application/json',
+        headers={'Content-Disposition':'attachment;filename=dtypes.json'})
 
 
 @app.route('/devices/add', methods=['GET', 'POST'])
