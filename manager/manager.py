@@ -20,11 +20,11 @@ class DeviceManager():
         self.client.subscribe("Devices")
         self.init_db_devices()
 
-    def init_db_devices():
+    def init_db_devices(self):
         devices = self.list_devices()
-        for device in devices:
+        for idx, device in devices.items():
             if device['status'] == 1:
-                send_add_message(device['uuid'], device['dtype'])
+                self.send_add_message(device['uuid'], device['dtype'])
 
     
     def on_mqtt_message_recieve(self, client, userdata, message):
