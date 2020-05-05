@@ -141,10 +141,11 @@ class DeviceManager():
         val2['data'] = []
         q = f'SELECT created_at, value, value2 from data where uuid={device_uuid}'
         for each in db.query(q):
-            point = [each["created_at"].strftime("%d/%m/%y %H:%M:%S"), each['value'] ] 
+            time = each["created_at"].strftime("%d/%m/%y %H:%M:%S")
+            point = [time, each['value'] ]
             val1['data'].append(point)
             if each['value2']:
-                point = [each["created_at"].strftime("%d/%m/%y %H:%M:%S"), each['value2'] ] 
+                point = [time, each['value2'] ]
                 val2['data'].append(points)
         
         if val2['data']:
