@@ -35,7 +35,6 @@ def dtypes():
 def devices_json():
     response = manager.list_devices()
     response = json.dumps(response)
-    
     return Response(response, 
         mimetype='application/json',
         headers={'Content-Disposition':'attachment;filename=devices.json'})
@@ -45,7 +44,6 @@ def devices_json():
 def groups_json():
     response = manager.list_groups()
     response = json.dumps(response)
-    
     return Response(response, 
         mimetype='application/json',
         headers={'Content-Disposition':'attachment;filename=groups.json'})
@@ -55,7 +53,6 @@ def groups_json():
 def dtypes_json():
     response = manager.list_dtypes()
     response = json.dumps(response)
-    
     return Response(response, 
         mimetype='application/json',
         headers={'Content-Disposition':'attachment;filename=dtypes.json'})
@@ -67,31 +64,20 @@ def device_add():
         uuid = request.form['uuid']
         dtype = request.form['dtype']
         group = request.form['group']
-        
         new_device = {
             'uuid': uuid,
             'dtype': dtype,
             'group': group
         }
-        if manager.add_device_to_db(data):
+        if not manager.add_device_to_db(new_device):
+            flash(u'Invalid uuid', 'error')
+        else:
             manager.send_add_message(uuid, dtype)
             flash(u'Device added', 'success')
-        else:
-            flash(u'Invalid uuid', 'error')
-
         return redirect('/devices')
     else:
         next_uuid = len(manager.list_devices())
         return render_template('device_add.html', title='Add New Device', uuid=next_uuid)
-
-@app.route('/devices/<int:device_uuid>/delete')
-def device_delete(device_uuid):
-    device = manager.get_device(device_uuid)
-    if not device:
-        abort(404)
-    manager.remove_device(device_uuid)
-    
-    return redirect('/devices')
 
 @app.route('/devices/<int:device_uuid>')
 def device_show(device_uuid):
@@ -99,8 +85,41 @@ def device_show(device_uuid):
     if not device:
         abort(404)
 
+    return render_template('device_show.html', device=device)
+
+@app.route('/devices/<int:device_uuid>/edit', methods=['GET', 'POST'])
+def device_edit(device_uuid):
+    device = manager.get_device(device_uuid)
+    if not device:
+        abort(404)
+
+    if request.method == 'POST':
+        uuid = device['uuid']
+        dtype = device['dtype']
+        group = request.form['group']
+        new_device = {
+            'uuid': uuid,
+            'dtype': dtype,
+            'group': group
+        }
+
+        manager.remove_device(device_uuid)
+        manager.add_device(new_device)
+        flash(u'Device updated', 'success')
+        return redirect(f'/devices/{device_uuid}')
+    else:
+        return render_template('device_edit.html', title='Edit Device', device=device)
+
+@app.route('/devices/<int:device_uuid>/<string:command>')
+def device_command(device_uuid, command):
+    if not command in ["start", "stop", "delete"]:
+        abort(404)
+    device = manager.get_device(device_uuid)
+    if not device:
+        abort(404)
     manager.process_device_command(device, command)
     return redirect('/devices')
+
 
 @app.route('/groups/<int:group_id>/<string:command>')
 def group_command(group_id, command):
@@ -123,31 +142,6 @@ def type_command(dtype, command):
         manager.process_device_command(device, command)
 
     return redirect('/dtypes')
-
-
-@app.route('/devices/<int:device_uuid>/edit', methods=['GET', 'POST'])
-def device_edit(device_uuid):
-    device = manager.get_device(device_uuid)
-    if not device:
-        abort(404)
-
-    if request.method == 'POST':
-        uuid = device['uuid']
-        dtype = device['dtype']
-        group = request.form['group']
-        
-        new_device = {
-            'uuid': uuid,
-            'dtype': dtype,
-            'group': group
-        }
-
-        manager.remove_device(device_uuid)
-        manager.add_device(new_device)
-        flash(u'Device updated', 'success')
-        return redirect(f'/devices/{device_uuid}')
-    else:
-        return render_template('device_edit.html', title='Edit Device', device=device)
 
 @app.errorhandler(404)
 def page_not_found(error):

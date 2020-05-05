@@ -23,10 +23,9 @@ class DeviceManager():
     def init_db_devices(self):
         devices = self.list_devices()
         for idx, device in devices.items():
-            if device['status'] == 1:
+            if device['status'] == '1':
                 self.send_add_message(device['uuid'], device['dtype'])
 
-    
     def on_mqtt_message_recieve(self, client, userdata, message):
         data = json.loads(message.payload)
         if data['Type'] == "Heartbeat":
@@ -43,27 +42,24 @@ class DeviceManager():
         device = {}
         device['uuid'] = int(data['uuid'])
         device['dtype'] = data['dtype']
-        device['group'] = data['group']
+        device['group'] = int(data['group'])
         device['created_at'] = datetime.now()
         device['heartbeat'] = datetime.now()
-        device['status'] = 1
+        device['status'] = '1'
         db['device'].insert(device)
         return True
-    
-    def remove_device_from_db(self, data):
-        if db['device'].find_one(uuid=data['uuid']):
-            return False
 
+    def remove_device_from_db(self, uuid):
+        if not db['device'].find_one(uuid=uuid):
+            return False
         db['device'].delete(uuid=uuid)
 
     def send_add_message(self, uuid, dtype):
         message = {}
         message['uuid'] = uuid
         message['dtype'] = dtype
-
         message['type'] = 'Command'
         message['command'] = 'Add Device'
-
         message = json.dumps(message)
         self.client.subscribe(f'Devices/{uuid}')
         self.client.publish('Devices', message)
@@ -78,12 +74,12 @@ class DeviceManager():
 
     def update_status_off(self, uuid):
         device = self.get_device(uuid)
-        data = dict(uuid=uuid, status=0)
+        data = dict(uuid=uuid, status='0')
         db['device'].update(data, ['uuid'])
 
     def update_status_on(self, uuid):
         device = self.get_device(uuid)
-        data = dict(uuid=uuid, status=1)
+        data = dict(uuid=uuid, status='1')
         db['device'].update(data, ['uuid'])
 
     def list_devices(self):
@@ -91,36 +87,28 @@ class DeviceManager():
         for device in db['device'].find():
             device["created_at"] = device["created_at"].strftime("%d/%m/%y %H:%M:%S")
             devices[device['uuid']] = device
-
         return devices
 
     def get_device(self, device_id):
         device = db['device'].find_one(uuid=device_id)
-        
         if not device:
             return None
-
         device["created_at"] = device["created_at"].strftime("%d/%m/%y %H:%M:%S")
         return device
-    
+
     def list_groups(self):
         groups = {}
-        
         for device in db['device'].find():
             device["created_at"] = device["created_at"].strftime("%d/%m/%y %H:%M:%S")
             group = device['group']
-            
             if group in groups:
                 groups[group].append(device)
             else:
                 groups[group] = [device]
-
         return groups
-
 
     def list_dtypes(self):
         dtypes = {}
-
         for device in db['device'].find():
             device["created_at"] = device["created_at"].strftime("%d/%m/%y %H:%M:%S")
             dtype = device['dtype']
@@ -129,7 +117,6 @@ class DeviceManager():
                 dtypes[dtype].append(device)
             else:
                 dtypes[dtype] = [device]
-
         return dtypes
 
     def process_device_command(self, device, command):
