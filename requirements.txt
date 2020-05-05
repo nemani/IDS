@@ -3,3 +3,4 @@ python-kafka
 dataset
 paho-mqtt
 psycopg2
+chartkick

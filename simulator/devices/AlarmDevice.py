@@ -12,7 +12,7 @@ class AlarmDevice(BaseDevice):
         print(data)
 
     def send_message(self):
-        message = self.create_message({'type': 'Tick', 'Alarm': self.alarm})
+        message = self.create_message({'type': 'Tick', 'value': self.alarm})
         # Publish to Self Topic
         self.client.publish(self.topic, message)
 

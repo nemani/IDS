@@ -12,7 +12,7 @@ class DoorstepDevice(BaseDevice):
 
     def send_message(self):
         doorstep_simulation = random.choices([0, 1], [90, 10])
-        message = self.create_message( {'type': 'Tick', 'DoorOpen': doorstep_simulation[0]} )
+        message = self.create_message( {'type': 'Tick', 'value': doorstep_simulation[0]} )
         
         # Publish to Self Topic
         self.client.publish(self.topic, message)

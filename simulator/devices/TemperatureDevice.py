@@ -12,7 +12,7 @@ class TemperatureDevice(BaseDevice):
 
     def send_message(self):
         temperature_simulation = random.choices([(10, 59), (60, 100), (101, 120), (200, 220)], [20, 60, 15, 5])
-        message = self.create_message({'type': 'Tick', 'Temperature': random.randrange(temperature_simulation[0][0], temperature_simulation[0][1])})
+        message = self.create_message({'type': 'Tick', 'value': random.randrange(temperature_simulation[0][0], temperature_simulation[0][1])})
         
         # Publish to Self Topic
         self.client.publish(self.topic, message)

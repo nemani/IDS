@@ -30,6 +30,7 @@ DEVICE_TYPES = {
 def boot(uuid, dtype):
     device = DEVICE_TYPES[dtype](uuid, broker)
     device.on_stimulus()
+    device.on_heartbeat()
 
 def setup_device(uuid, dtype):
     thread = threading.Thread(target=boot, args=(uuid, dtype))

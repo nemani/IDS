@@ -16,6 +16,7 @@ class BaseDevice:
         self.topic = f"Devices/{self.uuid}"
 
         self.client.subscribe(self.topic)
+        self.client.loop_start()
         print(f"BaseDevice: init {uuid} {dtype}")
         self.send_init_message()
         
@@ -28,33 +29,20 @@ class BaseDevice:
         message = {}
         message['dtype'] = self.dtype
         message['uuid'] = self.uuid
-        message['timestamp'] = datetime.now().strftime("%d/%m/%y %H:%M:%S")
+        message['created_at'] = datetime.now().strftime("%d/%m/%y %H:%M:%S")
         message = {**message, **message_opts}
         return json.dumps(message)
 
     def on_message_recieve(self, client, userdata, message):
-        data = json.loads(message.payload)
-        print("message received ", str(message.payload.decode("utf-8")))
-        print("message topic=", message.topic)
-
-        if data.type == "Command":
+        if message.topic != self.topic:
+            return
+        data = json.loads(message.payload.decode("utf-8"))
+        if data['type'] == "Control" and data['control'] == "Stop Device":
+            self.stop()
+            self.stop_heartbeat()
+        if data['type'] == "Command":
             self.process_command(data)
-        if data.type == "Control":
-            if data.control == "Start Device":
-                if self.is_active:
-                    return
-                self.start()
-                self.start_heatbeat()
-            elif data.control == "Stop Device":
-                if not self.is_active:
-                    return
-                self.stop()
-            elif data.control() == "Remove Device":
-                if not self.is_active and not self.is_beating:
-                    return
-                self.stop()
-                self.stop_heatbeat()
-
+                            
     def start(self):
         if not self.is_active:
             self._timer = Timer(self.tick_time, self.on_stimulus)
@@ -70,26 +58,24 @@ class BaseDevice:
         self.start()
         self.send_message()
 
-    def start_heatbeat(self):
+    def start_heartbeat(self):
         if not self.beating:
-            self._timer = Timer(30, self.on_stimulus)
-            self._timer.start()
+            self._heart_timer = Timer(30, self.on_heartbeat)
+            self._heart_timer.start()
             self.beating = True
 
-    def stop_heatbeat(self):
-        self._timer.cancel()
+    def stop_heartbeat(self):
+        self._heart_timer.cancel()
         self.beating = False
 
-    def on_heatbeat(self):
+    def on_heartbeat(self):
         self.beating = False
-        self.start()
+        self.start_heartbeat()
         self.send_heartbeat()
 
     def send_heartbeat(self):
         message = self.create_message( {'type': 'Heartbeat'} )
 
-        # Publish to Self Topic
-        self.client.publish(self.topic, message)
-
         # Also Publish to all Devices Topic
         self.client.publish("Devices", message)
+ 

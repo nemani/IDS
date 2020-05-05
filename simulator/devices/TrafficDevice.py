@@ -14,7 +14,7 @@ class TrafficDevice(BaseDevice):
         traffic_simulation = random.choices([(0, 50), (51, 125), (126, 175), (176, 200)], [25, 50, 15, 10])
         traffic_simulation_inflow = random.randrange(traffic_simulation[0][0], traffic_simulation[0][1])
         traffic_simulation_outflow = random.randrange(0, traffic_simulation_inflow)
-        message = self.create_message({'type': 'Tick', 'Traffic': (traffic_simulation_inflow - traffic_simulation_outflow)})
+        message = self.create_message({'type': 'Tick', 'value': (traffic_simulation_inflow - traffic_simulation_outflow)})
         
         # Publish to Self Topic
         self.client.publish(self.topic, message)

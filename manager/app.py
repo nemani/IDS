@@ -6,6 +6,11 @@ from flask import *
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\dasdasdn\xec]/'
 
+import chartkick
+ck = Blueprint('ck_page', __name__, static_folder=chartkick.js(), static_url_path='/static')
+app.register_blueprint(ck, url_prefix='/ck')
+app.jinja_env.add_extension("chartkick.ext.charts")
+
 manager = builtins.manager
 
 @app.route('/')
@@ -84,8 +89,9 @@ def device_show(device_uuid):
     device = manager.get_device(device_uuid)
     if not device:
         abort(404)
-
-    return render_template('device_show.html', device=device)
+    graph_data = manager.get_device_data(device_uuid)
+    
+    return render_template('device_show.html', device=device, graph_data=graph_data)
 
 @app.route('/devices/<int:device_uuid>/edit', methods=['GET', 'POST'])
 def device_edit(device_uuid):

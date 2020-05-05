@@ -28,11 +28,13 @@ class DeviceManager():
 
     def on_mqtt_message_recieve(self, client, userdata, message):
         data = json.loads(message.payload)
-        if data['Type'] == "Heartbeat":
-            device = self.get_device(data['uuid'])
-            device['hearbeat'] = datetime.now()
-        if data['Type'] == "Tick":
-            db['data'].insert(data)
+        print(data['type'])
+        if data['type'] == 'Heartbeat':
+            data = dict(uuid=data['uuid'], heartbeat=datetime.now())
+            db['device'].update(data, ['uuid'])
+        elif data['type'] == 'Tick':
+            data['created_at'] = datetime.strptime(data['created_at'], '%d/%m/%y %H:%M:%S')
+            db['data'].insert(data, ensure=True)
             self.kafka_producer.send('DeviceManager', json.dumps(data))
 
     def add_device_to_db(self, data):
@@ -129,3 +131,23 @@ class DeviceManager():
         if command == "delete":
             manager.send_stop_message(device['uuid'])
             manager.remove_device_from_db(device['uuid'])
+
+    def get_device_data(self, device_uuid):
+        val1 = {}
+        val1['name'] = 'value1'
+        val1['data'] = []
+        val2 = {}
+        val2['name'] = 'value2'
+        val2['data'] = []
+        q = f'SELECT created_at, value, value2 from data where uuid={device_uuid}'
+        for each in db.query(q):
+            point = [each["created_at"].strftime("%d/%m/%y %H:%M:%S"), each['value'] ] 
+            val1['data'].append(point)
+            if each['value2']:
+                point = [each["created_at"].strftime("%d/%m/%y %H:%M:%S"), each['value2'] ] 
+                val2['data'].append(points)
+        
+        if val2['data']:
+            return [val1, val2]
+
+        return val1['data']

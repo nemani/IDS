@@ -12,7 +12,7 @@ class StreetlightDevice(BaseDevice):
 
     def send_message(self):
         streetlight_simulation = random.choices([0, 1], [5, 95])
-        message = self.create_message( {'type': 'Tick', 'Streetlight': streetlight_simulation[0]} )
+        message = self.create_message( {'type': 'Tick', 'value': streetlight_simulation[0]} )
         
         # Publish to Self Topic
         self.client.publish(self.topic, message)
