@@ -25,7 +25,7 @@ ___
 ___
 Ingest IoT data in the form of MQTT events from any source (here, Device Simulator). The connect feature lets your applications subscribe to those events to process the event data.
 
-[demo-simulator](./misc/demo-simulator.gif)
+![demo-simulator](./misc/demo-simulator.gif)
 
 #### Device Management
 ___
