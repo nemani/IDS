@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 {% block body %}
-<div class="container-fluid">
+<div class="container-fluid" >
     <br><br>
-    <h1 text-center font-weight-bold>IoT Device Manager</h1>
-    <br>
+    <div style="position: absolute; left: 42%;">
+        <h1 text-center font-weight-bold>IoT Device Manager</h1>
+        <br>
+        <a href="/devices" class="btn btn-info" role="button">List Devices</a>
+        <a href="/groups" class="btn btn-info" role="button">List Groups</a>
+    </div>
     <hr>
-    <a href="/devices" class="btn btn-success" role="button">List Active Devices</a>
-    <a href="/groups" class="btn btn-success" role="button">List Groups</a>
 </div>
 {% endblock %}

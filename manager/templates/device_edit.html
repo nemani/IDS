@@ -2,8 +2,8 @@
 {% block body %}
 <div class="container-fluid">
     <br><br>
-    <a href="/" class="btn btn-success" role="button">Home</a>
-    <a href="/devices" class="btn btn-success" role="button">List Devices</a>
+    <a href="/" class="btn btn-info" role="button">Home</a>
+    <a href="/devices" class="btn btn-info" role="button">List Devices</a>
     <a href='/devices/{{device["uuid"]}}/delete' class="btn btn-danger" role="button" style="float: right">Delete Device</a>
     <br><br>
     <hr>
@@ -28,7 +28,7 @@
             <input type='text' name='group' id='group' value='{{device["group"] | default("")}}'>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
-        <a href='/devices' class="btn btn-danger" role="button">Cancel</a>
+        <a href='/devices' class="btn btn-warning" role="button">Cancel</a>
     </form>
 </div>
 {% endblock %}

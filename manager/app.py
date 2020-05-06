@@ -33,7 +33,7 @@ def groups():
 @app.route('/dtypes')
 def dtypes():
     response = manager.list_dtypes()
-    return render_template('groups.html', groups=response)
+    return render_template('dtypes.html', groups=response)
 
 # Return the Devices in JSON Format
 @app.route('/devices.json')
@@ -61,7 +61,6 @@ def dtypes_json():
     return Response(response, 
         mimetype='application/json',
         headers={'Content-Disposition':'attachment;filename=dtypes.json'})
-
 
 @app.route('/devices/add', methods=['GET', 'POST'])
 def device_add():
@@ -109,8 +108,8 @@ def device_edit(device_uuid):
             'group': group
         }
 
-        manager.remove_device(device_uuid)
-        manager.add_device(new_device)
+        manager.remove_device_from_db(device_uuid)
+        manager.add_device_to_db(new_device)
         flash(u'Device updated', 'success')
         return redirect(f'/devices/{device_uuid}')
     else:
@@ -125,7 +124,6 @@ def device_command(device_uuid, command):
         abort(404)
     manager.process_device_command(device, command)
     return redirect('/devices')
-
 
 @app.route('/groups/<int:group_id>/<string:command>')
 def group_command(group_id, command):

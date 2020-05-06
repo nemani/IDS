@@ -6,11 +6,11 @@
     <a href="/devices" class="btn btn-info" role="button" style="float: right">List Devices</a>
     <br><br>
     <hr>
-    {% for group, devices in groups.items() %}
-    <h3>{{ group }}</h3>
+    {% for dtype, devices in groups.items() %}
+    <h3>{{ dtype }}</h3>
     <div>
-        <a href="/groups/{{ group }}/start" class="btn btn-success" role="button">Start {{group}} Devices</a>
-        <a href="/groups/{{ group }}/stop" class="btn btn-danger" role="button">Stop {{group}} Devices</a>
+        <a href="/dtypes/{{ dtype }}/start" class="btn btn-success" role="button">Start {{dtype}} Devices</a>
+        <a href="/dtypes/{{ dtype }}/stop" class="btn btn-danger" role="button">Stop {{dtype}} Devices</a>
     </div><br>
     <div class="card-columns">
         {% for device in devices %}
@@ -29,6 +29,6 @@
     </div>
     <hr>
     {% endfor %}
-    <a href="/groups.json" class="btn btn-info" role="button" style="float: right">Download Devices (by group) List (json)</a>
+    <a href="/dtypes.json" class="btn btn-info" role="button" style="float: right">Download Devices (by type) List (json)</a>
 </div>
 {% endblock %}

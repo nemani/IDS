@@ -28,6 +28,7 @@ class DeviceManager():
 
     def on_mqtt_message_recieve(self, client, userdata, message):
         data = json.loads(message.payload)
+        data['uuid'] = int(data['uuid'])
         print(data['type'])
         if data['type'] == 'Heartbeat':
             data = dict(uuid=data['uuid'], heartbeat=datetime.now())
@@ -123,14 +124,14 @@ class DeviceManager():
 
     def process_device_command(self, device, command):
         if command == "start":
-            manager.send_add_message(device['uuid'], device['dtype'])
-            manager.update_status_on(device['uuid'])
+            self.send_add_message(device['uuid'], device['dtype'])
+            self.update_status_on(device['uuid'])
         if command == "stop":
-            manager.send_stop_message(device['uuid'])
-            manager.update_status_off(device['uuid'])
+            self.send_stop_message(device['uuid'])
+            self.update_status_off(device['uuid'])
         if command == "delete":
-            manager.send_stop_message(device['uuid'])
-            manager.remove_device_from_db(device['uuid'])
+            self.send_stop_message(device['uuid'])
+            self.remove_device_from_db(device['uuid'])
 
     def get_device_data(self, device_uuid):
         val1 = {}
@@ -146,7 +147,7 @@ class DeviceManager():
             val1['data'].append(point)
             if each['value2']:
                 point = [time, each['value2'] ]
-                val2['data'].append(points)
+                val2['data'].append(point)
         
         if val2['data']:
             return [val1, val2]

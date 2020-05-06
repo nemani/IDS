@@ -2,22 +2,29 @@
 {% block body %}
 <div class="container-fluid">
     <br><br>
-    <a href="/" class="btn btn-success" role="button">Home</a>
-    <a href="/devices" class="btn btn-success" role="button">List Devices</a>
-    <a href="{{request.path}}/edit" class="btn btn-success" role="button" style="float: right">Edit Device</a>
+    <a href="/" class="btn btn-info" role="button">Home</a>
+    <a href="/devices" class="btn btn-info" role="button">List Devices</a>
+    <a href="{{request.path}}/edit" class="btn btn-info" role="button" style="float: right">Edit Device</a>
     <br><br>
     <hr>
-    <div class="card-columns">
-        <div class="card bg-info text-center text-white" style="width:400px;">
+    <div class="row">
+        <div class="col-sm-8">
+            {% line_chart graph_data %}
+        </div>
+        <div class="col-sm-4 card text-center text-white {{ 'bg-success' if device.status == '1' else 'bg-danger'}}" style="width:400px;">
             <div class="card-header">
                 {{ device["created_at"] }}
             </div>
             <div class="card-body">
-                {{ device["group"] }} {{ device["dtype"] }}
-                {% line_chart graph_data %}
+                <span>{{ device["group"] }}</span><br>
+                <span><b>{{ device["dtype"] }}</b></span>
             </div>
         </div>
     </div>
     <hr>
+    <div style="position: absolute; left: 42%;">
+        <a href="{{request.path}}/start" class="btn btn-success {{ 'disabled' if device.status == '1' }}" role="button">Start Device</a>
+        <a href="{{request.path}}/stop" class="btn btn-danger {{ 'disabled' if device.status == '0' }}" role="button">Stop Device</a>
+    </div>
 </div>
 {% endblock %}
