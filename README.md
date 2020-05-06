@@ -25,35 +25,35 @@ ___
 ___
 Ingest IoT data in the form of MQTT events from any source (here, Device Simulator). The connect feature lets your applications subscribe to those events to process the event data.
 
-[demo-simulator]()
+[demo-simulator](./misc/demo-simulator.gif)
 
 #### Device Management
 ___
 
 Device addition, removal, and controls - on, off. 
 
-[demo-device-management]()
+[demo-device-management](./misc/demo-device-management.gif)
 
 #### Group Management
 ___
 Controlling grouped (by group numbers or device types) devices.
 
-[demo-group-management]()
+[demo-group-management](./misc/demo-group-management.gif)
 
-[demo-dtype-management]()
+[demo-dtype-management](./misc/demo-dtype-management.gif)
 
 #### Capture
 ___
 Capture your IoT data in the cloud DB.
 
-[demo-db]()
+[demo-db](./misc/demo-db.gif)
 
 #### Monitor
 ___
 Get real-time graphs of devices with built-in monitoring dashboards.
 
-[demo-monitor]()
+[demo-monitor](./misc/demo-monitor.gif)
 
 #### APIs to connect apps to device data
 ___
-[demo-services-api]()
+[demo-services-api](./misc/demo-services-api.gif)
