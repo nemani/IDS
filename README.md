@@ -32,28 +32,28 @@ ___
 
 Device addition, removal, and controls - on, off. 
 
-[demo-device-management](./misc/demo-device-management.gif)
+![demo-device-management](./misc/demo-device-management.gif)
 
 #### Group Management
 ___
 Controlling grouped (by group numbers or device types) devices.
 
-[demo-group-management](./misc/demo-group-management.gif)
+![demo-group-management](./misc/demo-group-management.gif)
 
-[demo-dtype-management](./misc/demo-dtype-management.gif)
+![demo-dtype-management](./misc/demo-dtype-management.gif)
 
 #### Capture
 ___
 Capture your IoT data in the cloud DB.
 
-[demo-db](./misc/demo-db.gif)
+![demo-db](./misc/demo-db.gif)
 
 #### Monitor
 ___
 Get real-time graphs of devices with built-in monitoring dashboards.
 
-[demo-monitor](./misc/demo-monitor.gif)
+![demo-monitor](./misc/demo-monitor.gif)
 
 #### APIs to connect apps to device data
 ___
-[demo-services-api](./misc/demo-services-api.gif)
+![demo-services-api](./misc/demo-services-api.gif)
